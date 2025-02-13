@@ -3,7 +3,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
-from .forms import TaskForm
 
 # Create your views here.
 
@@ -41,35 +40,12 @@ def signup(request):
 
 #Pagina de tareas            
 def tasks(request):
-    return render(request, 'tasks.html')       
-
-def create_task(request):
-     
-    if request.method == 'GET':
-         return render(request, 'create_task.html', {
-        'form': TaskForm
-         })   
-
-    else:
-        try:
-            form = TaskForm(request.POST)
-            new_task = form.save(commit=False)
-            new_task.user = request.user
-            new_task.save()
-            return redirect('tasks')
-        except ValueError:
-            return render(request, 'create_task.html', {
-            'form': TaskForm,
-            'error': 'Por favor provee un dato valido',
-         })   
-             
-
-#Funcion boton de cerrar sesion
+    return render(request, 'tasks.html')             
+                
 def signout(request):
     logout(request)
     return redirect('home')
 
-#Pagina de inicio de sesion
 def signin(request):
     if request.method == 'GET':
         return render(request, 'signin.html', {
