@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<h1>Signin</h1>
+<h1>Sign In</h1>
 
 {{error}}
 
 <form action="" method="post">
     {% csrf_token %}
-    {{form.as_p}}
+    {{form.as_p}}   
     <button> Sign In</button>
 </form>
 

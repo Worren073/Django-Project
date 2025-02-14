@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Sign Up</h1>
 
+<h1>create task</h1>
 {{error}}
-
-<form method="post">
+<form action="/tasks/create/" method="post">
     {% csrf_token %}
     {{form.as_p}}
-    <button>
-        Sign Up
-    </button>
+    <button>Save</button>
 </form>
+
 {% endblock %}
