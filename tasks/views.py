@@ -5,6 +5,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
 from .forms import TaskForm
 from .models import Task
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -40,13 +42,15 @@ def signup(request):
                     "error": 'Las contraseñas no coinciden', 
                     })
 
-#Pagina de tareas            
+#Pagina de tareas
+@login_required            
 def tasks(request):
    tasks = Task.objects.filter(user = request.user, date_completed__isnull=True)
 
    return render(request, 'tasks.html', {'tasks': tasks})   
 
-#Seccion de creacion de tareas    
+#Seccion de creacion de tareas 
+@login_required   
 def create_task(request):
      
     if request.method == 'GET':
@@ -65,12 +69,50 @@ def create_task(request):
             'form': TaskForm,
             'error': 'Por favor provee un dato valido',
          })   
-        
+
+#Pagina para ver los detalles de las tareas
+@login_required        
 def task_detail(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    return render(request, 'task_detail.html', {'task': task})
-                          
-                
+    if request.method == 'GET':
+        task = get_object_or_404(Task, pk=task_id, user=request.user)
+        form = TaskForm(instance=task)
+        return render(request, 'task_detail.html', {'task': task, 'form': form})
+
+    else:
+        try:
+            task = get_object_or_404(Task, pk=task_id, user=request.user)
+            form = TaskForm(request.POST, instance=task)
+            form.save
+            return redirect('tasks')
+        except ValueError:
+            return render(request, 'task_detail.html', {'task': task, 'form': form, 'error': "Error actualizando la tarea"})
+
+#Funcion para completar una tarea
+@login_required  
+def complete_task(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    if request.method == 'POST':
+        task.date_completed = timezone.now()
+        task.save
+        return redirect('tasks') 
+
+#Pagina de lista de tareas completadas
+@login_required  
+def tasks_completed(request):
+   tasks = Task.objects.filter(user = request.user, date_completed__isnull=False).order_by('-date_completed')
+
+   return render(request, 'tasks.html', {'tasks': tasks})   
+
+#Funcion para eliminar una tarea
+@login_required  
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    if request.method == 'POST':
+        task.delete()
+        return redirect('tasks')                  
+
+#Funcion para cerrar sesion
+@login_required                  
 def signout(request):
     logout(request)
     return redirect('home')
