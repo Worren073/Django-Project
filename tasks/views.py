@@ -71,21 +71,20 @@ def create_task(request):
          })   
 
 #Pagina para ver los detalles de las tareas
-@login_required        
+@login_required
 def task_detail(request, task_id):
     if request.method == 'GET':
         task = get_object_or_404(Task, pk=task_id, user=request.user)
         form = TaskForm(instance=task)
         return render(request, 'task_detail.html', {'task': task, 'form': form})
-
     else:
         try:
             task = get_object_or_404(Task, pk=task_id, user=request.user)
             form = TaskForm(request.POST, instance=task)
-            form.save
+            form.save()
             return redirect('tasks')
         except ValueError:
-            return render(request, 'task_detail.html', {'task': task, 'form': form, 'error': "Error actualizando la tarea"})
+            return render(request, 'task_detail.html', {'task': task, 'form': form, 'error': 'Error actualizando tarea.'})
 
 #Funcion para completar una tarea
 @login_required  
@@ -93,9 +92,9 @@ def complete_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     if request.method == 'POST':
         task.date_completed = timezone.now()
-        task.save
-        return redirect('tasks') 
-
+        task.save()
+        return redirect('tasks')
+    
 #Pagina de lista de tareas completadas
 @login_required  
 def tasks_completed(request):

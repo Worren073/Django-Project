@@ -1,5 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Home</h1>
+<main class="container py-5">
+    <section class="card card-body">
+        <h1 class="display-5 text-center">Home</h1>
+        <p>Aplicacion Online para gestion de tareas</p>
+        <p>
+            Elaborada para la materia de algoritmo y programacion II en la carrera de ingenieria
+            informatica en la Universidad Nacional Experimental de los LLanos Occidentales Ezequiel Zamora.
+        </p>
+        <p>
+            Este proyecto fue realizado utilizando Python y su framework llamado Django
+            
+        </p>
+        <h5>Elaborada por: Worren Barrios</h5>
+        <h6>Correo: worrenalexanderbz@gmail.com</h6>
+
+        <div class="text-center">
+            <a href="/signin/" class="btn btn-secondary">
+                Sing In
+            </a>
+            <a href="/signup/" class="btn btn-dark">
+                Sing Up
+            </a>
+        </div>
+    </section>
+</main>
 {% endblock %}
